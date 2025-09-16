@@ -39,7 +39,7 @@ endif()
 include_directories(include)
 include_directories(src)
 
-# Generated protobuf files
+# Generated protobuf files (pre-generated)
 set(PROTO_SRCS
   src/proto/streamit.pb.cc
   src/proto/streamit.grpc.pb.cc
@@ -56,24 +56,14 @@ find_package(PkgConfig REQUIRED)
 
 # Try to find system packages first, fall back to FetchContent
 find_package(Protobuf QUIET)
-find_package(gRPC QUIET)
 find_package(absl QUIET)
 find_package(fmt QUIET)
 find_package(spdlog QUIET)
-find_package(prometheus-cpp QUIET)
 
 # FetchContent for dependencies (only if not found system-wide)
 include(FetchContent)
 
-# gRPC and Protobuf
-if(NOT Protobuf_FOUND OR NOT gRPC_FOUND)
-  FetchContent_Declare(
-    grpc
-    GIT_REPOSITORY https://github.com/grpc/grpc.git
-    GIT_TAG v1.60.0
-  )
-  FetchContent_MakeAvailable(grpc)
-endif()
+# gRPC and Protobuf - using pre-generated files
 
 # Abseil
 if(NOT absl_FOUND)
@@ -115,44 +105,13 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(googletest)
 
-# Generate protobuf files
-set(PROTO_FILES
-  proto/streamit.proto
-)
-
-foreach(PROTO_FILE ${PROTO_FILES})
-  get_filename_component(PROTO_NAME ${PROTO_FILE} NAME_WE)
-  get_filename_component(PROTO_PATH ${PROTO_FILE} PATH)
-  
-  set(PROTO_SRCS "${CMAKE_CURRENT_BINARY_DIR}/${PROTO_NAME}.pb.cc")
-  set(PROTO_HDRS "${CMAKE_CURRENT_BINARY_DIR}/${PROTO_NAME}.pb.h")
-  set(GRPC_SRCS "${CMAKE_CURRENT_BINARY_DIR}/${PROTO_NAME}.grpc.pb.cc")
-  set(GRPC_HDRS "${CMAKE_CURRENT_BINARY_DIR}/${PROTO_NAME}.grpc.pb.h")
-  
-  add_custom_command(
-    OUTPUT "${PROTO_SRCS}" "${PROTO_HDRS}" "${GRPC_SRCS}" "${GRPC_HDRS}"
-    COMMAND protobuf::protoc
-    ARGS --grpc_out "${CMAKE_CURRENT_BINARY_DIR}"
-         --cpp_out "${CMAKE_CURRENT_BINARY_DIR}"
-         --plugin=protoc-gen-grpc=$<TARGET_FILE:gRPC::grpc_cpp_plugin>
-         "${CMAKE_CURRENT_SOURCE_DIR}/${PROTO_FILE}"
-    DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/${PROTO_FILE}"
-    COMMENT "Running gRPC C++ protocol buffer compiler on ${PROTO_FILE}"
-    VERBATIM
-  )
-  
-  list(APPEND PROTO_GENERATED_SRCS "${PROTO_SRCS}" "${GRPC_SRCS}")
-  list(APPEND PROTO_GENERATED_HDRS "${PROTO_HDRS}" "${GRPC_HDRS}")
-endforeach()
-
-# Create protobuf library
-add_library(streamit_proto ${PROTO_GENERATED_SRCS} ${PROTO_GENERATED_HDRS})
+# Create protobuf library using pre-generated files
+add_library(streamit_proto ${PROTO_SRCS} ${PROTO_HEADERS})
 target_link_libraries(streamit_proto
   PRIVATE
     protobuf::libprotobuf
-    gRPC::grpc++
 )
-target_include_directories(streamit_proto PUBLIC ${CMAKE_CURRENT_BINARY_DIR})
+target_include_directories(streamit_proto PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src/proto)
 
 # Component libraries
 add_subdirectory(src/common)
@@ -161,7 +120,8 @@ add_subdirectory(src/net)
 add_subdirectory(src/broker)
 add_subdirectory(src/controller)
 add_subdirectory(src/coordinator)
-# Executables
+
+# Tools
 add_subdirectory(tools/cli)
 
 # Tests
@@ -169,11 +129,60 @@ enable_testing()
 add_subdirectory(tests/unit)
 add_subdirectory(tests/integration)
 
+# Main executables
+add_executable(streamit_broker src/broker/broker_main.cc)
+target_link_libraries(streamit_broker
+  PRIVATE
+    streamit_common
+    streamit_storage
+    streamit_net
+    streamit_broker
+    streamit_proto
+    Threads::Threads
+    protobuf::libprotobuf
+    absl::status
+    absl::statusor
+    fmt::fmt
+    spdlog::spdlog
+)
+
+add_executable(streamit_controller src/controller/controller_main.cc)
+target_link_libraries(streamit_controller
+  PRIVATE
+    streamit_common
+    streamit_controller
+    streamit_proto
+    Threads::Threads
+    protobuf::libprotobuf
+    absl::status
+    absl::statusor
+    fmt::fmt
+    spdlog::spdlog
+)
+
+add_executable(streamit_coordinator src/coordinator/coordinator_main.cc)
+target_link_libraries(streamit_coordinator
+  PRIVATE
+    streamit_common
+    streamit_coordinator
+    streamit_proto
+    Threads::Threads
+    protobuf::libprotobuf
+    absl::status
+    absl::statusor
+    fmt::fmt
+    spdlog::spdlog
+)
+
 # Install targets
-install(TARGETS streamit_broker streamit_controller streamit_coordinator streamit_cli
+install(TARGETS streamit_broker streamit_controller streamit_coordinator
   RUNTIME DESTINATION bin
 )
 
-# CPack configuration
-include(CPack)
+install(TARGETS streamit_proto streamit_common streamit_storage streamit_net
+  streamit_broker streamit_controller streamit_coordinator
+  LIBRARY DESTINATION lib
+  ARCHIVE DESTINATION lib
+)
 
+install(DIRECTORY include/ DESTINATION include)
