@@ -1,0 +1,269 @@
+---
+Checks: >
+  modernize-*,
+  performance-*,
+  readability-*,
+  bugprone-*,
+  -modernize-use-trailing-return-type,
+  -readability-identifier-length,
+  -readability-magic-numbers,
+  -readability-uppercase-literal-suffix,
+  -bugprone-easily-swappable-parameters
+WarningsAsErrors: ""
+HeaderFilterRegex: ".*"
+CheckOptions:
+  - key: readability-identifier-naming.ClassCase
+    value: CamelCase
+  - key: readability-identifier-naming.StructCase
+    value: CamelCase
+  - key: readability-identifier-naming.FunctionCase
+    value: camelBack
+  - key: readability-identifier-naming.VariableCase
+    value: camelBack
+  - key: readability-identifier-naming.ParameterCase
+    value: camelBack
+  - key: readability-identifier-naming.MemberCase
+    value: camelBack
+  - key: readability-identifier-naming.PrivateMemberSuffix
+    value: _
+  - key: readability-identifier-naming.ProtectedMemberSuffix
+    value: _
+  - key: readability-identifier-naming.EnumConstantCase
+    value: UPPER_CASE
+  - key: readability-identifier-naming.EnumConstantPrefix
+    value: ""
+  - key: readability-identifier-naming.ConstexprVariableCase
+    value: UPPER_CASE
+  - key: readability-identifier-naming.ConstexprVariablePrefix
+    value: ""
+  - key: readability-identifier-naming.MacroDefinitionCase
+    value: UPPER_CASE
+  - key: readability-identifier-naming.MacroDefinitionPrefix
+    value: ""
+  - key: readability-identifier-naming.NamespaceCase
+    value: lower_case
+  - key: readability-identifier-naming.NamespacePrefix
+    value: ""
+  - key: readability-identifier-naming.TypedefCase
+    value: CamelCase
+  - key: readability-identifier-naming.TypeAliasCase
+    value: CamelCase
+  - key: readability-identifier-naming.TemplateParameterCase
+    value: CamelCase
+  - key: readability-identifier-naming.ConceptCase
+    value: CamelCase
+  - key: readability-identifier-naming.PrivateMemberPrefix
+    value: ""
+  - key: readability-identifier-naming.ProtectedMemberPrefix
+    value: ""
+  - key: readability-identifier-naming.PublicMemberCase
+    value: camelBack
+  - key: readability-identifier-naming.PublicMemberPrefix
+    value: ""
+  - key: readability-identifier-naming.PrivateMethodCase
+    value: camelBack
+  - key: readability-identifier-naming.ProtectedMethodCase
+    value: camelBack
+  - key: readability-identifier-naming.PublicMethodCase
+    value: camelBack
+  - key: readability-identifier-naming.PrivateMethodPrefix
+    value: ""
+  - key: readability-identifier-naming.ProtectedMethodPrefix
+    value: ""
+  - key: readability-identifier-naming.PublicMethodPrefix
+    value: ""
+  - key: readability-identifier-naming.PrivateStaticMethodCase
+    value: camelBack
+  - key: readability-identifier-naming.ProtectedStaticMethodCase
+    value: camelBack
+  - key: readability-identifier-naming.PublicStaticMethodCase
+    value: camelBack
+  - key: readability-identifier-naming.PrivateStaticMethodPrefix
+    value: ""
+  - key: readability-identifier-naming.ProtectedStaticMethodPrefix
+    value: ""
+  - key: readability-identifier-naming.PublicStaticMethodPrefix
+    value: ""
+  - key: readability-identifier-naming.PrivateStaticVariableCase
+    value: camelBack
+  - key: readability-identifier-naming.ProtectedStaticVariableCase
+    value: camelBack
+  - key: readability-identifier-naming.PublicStaticVariableCase
+    value: camelBack
+  - key: readability-identifier-naming.PrivateStaticVariablePrefix
+    value: ""
+  - key: readability-identifier-naming.ProtectedStaticVariablePrefix
+    value: ""
+  - key: readability-identifier-naming.PublicStaticVariablePrefix
+    value: ""
+  - key: readability-identifier-naming.PrivateGlobalConstantCase
+    value: UPPER_CASE
+  - key: readability-identifier-naming.ProtectedGlobalConstantCase
+    value: UPPER_CASE
+  - key: readability-identifier-naming.PublicGlobalConstantCase
+    value: UPPER_CASE
+  - key: readability-identifier-naming.PrivateGlobalConstantPrefix
+    value: ""
+  - key: readability-identifier-naming.ProtectedGlobalConstantPrefix
+    value: ""
+  - key: readability-identifier-naming.PublicGlobalConstantPrefix
+    value: ""
+  - key: readability-identifier-naming.PrivateGlobalVariableCase
+    value: camelBack
+  - key: readability-identifier-naming.ProtectedGlobalVariableCase
+    value: camelBack
+  - key: readability-identifier-naming.PublicGlobalVariableCase
+    value: camelBack
+  - key: readability-identifier-naming.PrivateGlobalVariablePrefix
+    value: ""
+  - key: readability-identifier-naming.ProtectedGlobalVariablePrefix
+    value: ""
+  - key: readability-identifier-naming.PublicGlobalVariablePrefix
+    value: ""
+  - key: readability-identifier-naming.PrivateLocalConstantCase
+    value: UPPER_CASE
+  - key: readability-identifier-naming.ProtectedLocalConstantCase
+    value: UPPER_CASE
+  - key: readability-identifier-naming.PublicLocalConstantCase
+    value: UPPER_CASE
+  - key: readability-identifier-naming.PrivateLocalConstantPrefix
+    value: ""
+  - key: readability-identifier-naming.ProtectedLocalConstantPrefix
+    value: ""
+  - key: readability-identifier-naming.PublicLocalConstantPrefix
+    value: ""
+  - key: readability-identifier-naming.PrivateLocalVariableCase
+    value: camelBack
+  - key: readability-identifier-naming.ProtectedLocalVariableCase
+    value: camelBack
+  - key: readability-identifier-naming.PublicLocalVariableCase
+    value: camelBack
+  - key: readability-identifier-naming.PrivateLocalVariablePrefix
+    value: ""
+  - key: readability-identifier-naming.ProtectedLocalVariablePrefix
+    value: ""
+  - key: readability-identifier-naming.PublicLocalVariablePrefix
+    value: ""
+  - key: readability-identifier-naming.PrivateParameterCase
+    value: camelBack
+  - key: readability-identifier-naming.ProtectedParameterCase
+    value: camelBack
+  - key: readability-identifier-naming.PublicParameterCase
+    value: camelBack
+  - key: readability-identifier-naming.PrivateParameterPrefix
+    value: ""
+  - key: readability-identifier-naming.ProtectedParameterPrefix
+    value: ""
+  - key: readability-identifier-naming.PublicParameterPrefix
+    value: ""
+  - key: readability-identifier-naming.PrivateMemberPrefix
+    value: ""
+  - key: readability-identifier-naming.ProtectedMemberPrefix
+    value: ""
+  - key: readability-identifier-naming.PublicMemberPrefix
+    value: ""
+  - key: readability-identifier-naming.PrivateMemberSuffix
+    value: _
+  - key: readability-identifier-naming.ProtectedMemberSuffix
+    value: _
+  - key: readability-identifier-naming.PublicMemberSuffix
+    value: ""
+  - key: readability-identifier-naming.PrivateMethodPrefix
+    value: ""
+  - key: readability-identifier-naming.ProtectedMethodPrefix
+    value: ""
+  - key: readability-identifier-naming.PublicMethodPrefix
+    value: ""
+  - key: readability-identifier-naming.PrivateMethodSuffix
+    value: ""
+  - key: readability-identifier-naming.ProtectedMethodSuffix
+    value: ""
+  - key: readability-identifier-naming.PublicMethodSuffix
+    value: ""
+  - key: readability-identifier-naming.PrivateStaticMethodPrefix
+    value: ""
+  - key: readability-identifier-naming.ProtectedStaticMethodPrefix
+    value: ""
+  - key: readability-identifier-naming.PublicStaticMethodPrefix
+    value: ""
+  - key: readability-identifier-naming.PrivateStaticMethodSuffix
+    value: ""
+  - key: readability-identifier-naming.ProtectedStaticMethodSuffix
+    value: ""
+  - key: readability-identifier-naming.PublicStaticMethodSuffix
+    value: ""
+  - key: readability-identifier-naming.PrivateStaticVariablePrefix
+    value: ""
+  - key: readability-identifier-naming.ProtectedStaticVariablePrefix
+    value: ""
+  - key: readability-identifier-naming.PublicStaticVariablePrefix
+    value: ""
+  - key: readability-identifier-naming.PrivateStaticVariableSuffix
+    value: ""
+  - key: readability-identifier-naming.ProtectedStaticVariableSuffix
+    value: ""
+  - key: readability-identifier-naming.PublicStaticVariableSuffix
+    value: ""
+  - key: readability-identifier-naming.PrivateGlobalConstantPrefix
+    value: ""
+  - key: readability-identifier-naming.ProtectedGlobalConstantPrefix
+    value: ""
+  - key: readability-identifier-naming.PublicGlobalConstantPrefix
+    value: ""
+  - key: readability-identifier-naming.PrivateGlobalConstantSuffix
+    value: ""
+  - key: readability-identifier-naming.ProtectedGlobalConstantSuffix
+    value: ""
+  - key: readability-identifier-naming.PublicGlobalConstantSuffix
+    value: ""
+  - key: readability-identifier-naming.PrivateGlobalVariablePrefix
+    value: ""
+  - key: readability-identifier-naming.ProtectedGlobalVariablePrefix
+    value: ""
+  - key: readability-identifier-naming.PublicGlobalVariablePrefix
+    value: ""
+  - key: readability-identifier-naming.PrivateGlobalVariableSuffix
+    value: ""
+  - key: readability-identifier-naming.ProtectedGlobalVariableSuffix
+    value: ""
+  - key: readability-identifier-naming.PublicGlobalVariableSuffix
+    value: ""
+  - key: readability-identifier-naming.PrivateLocalConstantPrefix
+    value: ""
+  - key: readability-identifier-naming.ProtectedLocalConstantPrefix
+    value: ""
+  - key: readability-identifier-naming.PublicLocalConstantPrefix
+    value: ""
+  - key: readability-identifier-naming.PrivateLocalConstantSuffix
+    value: ""
+  - key: readability-identifier-naming.ProtectedLocalConstantSuffix
+    value: ""
+  - key: readability-identifier-naming.PublicLocalConstantSuffix
+    value: ""
+  - key: readability-identifier-naming.PrivateLocalVariablePrefix
+    value: ""
+  - key: readability-identifier-naming.ProtectedLocalVariablePrefix
+    value: ""
+  - key: readability-identifier-naming.ProtectedLocalVariablePrefix
+    value: ""
+  - key: readability-identifier-naming.PublicLocalVariablePrefix
+    value: ""
+  - key: readability-identifier-naming.PrivateLocalVariableSuffix
+    value: ""
+  - key: readability-identifier-naming.ProtectedLocalVariableSuffix
+    value: ""
+  - key: readability-identifier-naming.PublicLocalVariableSuffix
+    value: ""
+  - key: readability-identifier-naming.PrivateParameterPrefix
+    value: ""
+  - key: readability-identifier-naming.ProtectedParameterPrefix
+    value: ""
+  - key: readability-identifier-naming.PublicParameterPrefix
+    value: ""
+  - key: readability-identifier-naming.PrivateParameterSuffix
+    value: ""
+  - key: readability-identifier-naming.ProtectedParameterSuffix
+    value: ""
+  - key: readability-identifier-naming.PublicParameterSuffix
+    value: ""
+
