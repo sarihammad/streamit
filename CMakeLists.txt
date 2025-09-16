@@ -54,48 +54,66 @@ set(PROTO_HEADERS
 find_package(Threads REQUIRED)
 find_package(PkgConfig REQUIRED)
 
-# FetchContent for dependencies
+# Try to find system packages first, fall back to FetchContent
+find_package(Protobuf QUIET)
+find_package(gRPC QUIET)
+find_package(absl QUIET)
+find_package(fmt QUIET)
+find_package(spdlog QUIET)
+find_package(prometheus-cpp QUIET)
+
+# FetchContent for dependencies (only if not found system-wide)
 include(FetchContent)
 
 # gRPC and Protobuf
-FetchContent_Declare(
-  grpc
-  GIT_REPOSITORY https://github.com/grpc/grpc.git
-  GIT_TAG v1.60.0
-)
-FetchContent_MakeAvailable(grpc)
+if(NOT Protobuf_FOUND OR NOT gRPC_FOUND)
+  FetchContent_Declare(
+    grpc
+    GIT_REPOSITORY https://github.com/grpc/grpc.git
+    GIT_TAG v1.60.0
+  )
+  FetchContent_MakeAvailable(grpc)
+endif()
 
 # Abseil
-FetchContent_Declare(
-  abseil
-  GIT_REPOSITORY https://github.com/abseil/abseil-cpp.git
-  GIT_TAG 20240116.2
-)
-FetchContent_MakeAvailable(abseil)
+if(NOT absl_FOUND)
+  FetchContent_Declare(
+    abseil
+    GIT_REPOSITORY https://github.com/abseil/abseil-cpp.git
+    GIT_TAG 20240116.2
+  )
+  FetchContent_MakeAvailable(abseil)
+endif()
 
 # fmt
-FetchContent_Declare(
-  fmt
-  GIT_REPOSITORY https://github.com/fmtlib/fmt.git
-  GIT_TAG 10.2.1
-)
-FetchContent_MakeAvailable(fmt)
+if(NOT fmt_FOUND)
+  FetchContent_Declare(
+    fmt
+    GIT_REPOSITORY https://github.com/fmtlib/fmt.git
+    GIT_TAG 10.2.1
+  )
+  FetchContent_MakeAvailable(fmt)
+endif()
 
 # spdlog
-FetchContent_Declare(
-  spdlog
-  GIT_REPOSITORY https://github.com/gabime/spdlog.git
-  GIT_TAG v1.12.0
-)
-FetchContent_MakeAvailable(spdlog)
+if(NOT spdlog_FOUND)
+  FetchContent_Declare(
+    spdlog
+    GIT_REPOSITORY https://github.com/gabime/spdlog.git
+    GIT_TAG v1.12.0
+  )
+  FetchContent_MakeAvailable(spdlog)
+endif()
 
 # prometheus-cpp
-FetchContent_Declare(
-  prometheus-cpp
-  GIT_REPOSITORY https://github.com/jupp0r/prometheus-cpp.git
-  GIT_TAG v1.1.0
-)
-FetchContent_MakeAvailable(prometheus-cpp)
+if(NOT prometheus-cpp_FOUND)
+  FetchContent_Declare(
+    prometheus-cpp
+    GIT_REPOSITORY https://github.com/jupp0r/prometheus-cpp.git
+    GIT_TAG v1.1.0
+  )
+  FetchContent_MakeAvailable(prometheus-cpp)
+endif()
 
 # Google Test
 FetchContent_Declare(
