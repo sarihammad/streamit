@@ -1,0 +1,185 @@
+syntax = "proto3";
+package streamit.v1;
+
+option go_package = "github.com/streamit/proto/streamit/v1";
+
+// Core data structures
+message Record {
+  bytes key = 1;
+  bytes value = 2;
+  int64 timestamp_ms = 3;
+}
+
+message RecordBatch {
+  int64 base_offset = 1;
+  bytes payload = 2;
+  uint32 crc32 = 3;
+}
+
+// Acknowledgment levels
+enum Ack {
+  ACK_LEADER = 0;
+  ACK_QUORUM = 1;
+}
+
+// Error codes
+enum ErrorCode {
+  OK = 0;
+  THROTTLED = 1;
+  NOT_LEADER = 2;
+  UNKNOWN_TOPIC = 3;
+  OFFSET_OUT_OF_RANGE = 4;
+  IDEMPOTENT_REPLAY = 5;
+  INTERNAL = 6;
+  INVALID_ARGUMENT = 7;
+  NOT_FOUND = 8;
+  ALREADY_EXISTS = 9;
+  PERMISSION_DENIED = 10;
+  RESOURCE_EXHAUSTED = 11;
+  FAILED_PRECONDITION = 12;
+  OUT_OF_RANGE = 13;
+  UNIMPLEMENTED = 14;
+  UNAVAILABLE = 15;
+  DATA_LOSS = 16;
+  UNAUTHENTICATED = 17;
+  DEADLINE_EXCEEDED = 18;
+  CANCELLED = 19;
+  UNKNOWN = 20;
+}
+
+// Producer API
+message ProduceRequest {
+  string topic = 1;
+  int32 partition = 2;
+  repeated Record records = 3;
+  Ack ack = 4;
+  string producer_id = 5;
+  int64 sequence = 6; // per (topic, partition)
+}
+
+message ProduceResponse {
+  int64 base_offset = 1;
+  ErrorCode error_code = 2;
+  string error_message = 3;
+  int32 retry_after_ms = 4;  // For THROTTLED errors
+  string leader_hint = 5;    // For NOT_LEADER errors (host:port)
+}
+
+// Consumer API
+message FetchRequest {
+  string topic = 1;
+  int32 partition = 2;
+  int64 offset = 3;
+  int32 max_bytes = 4;
+}
+
+message FetchResponse {
+  int64 high_watermark = 1;
+  repeated RecordBatch batches = 2;
+  ErrorCode error_code = 3;
+  string error_message = 4;
+  int32 retry_after_ms = 5;  // For THROTTLED errors
+  string leader_hint = 6;    // For NOT_LEADER errors (host:port)
+}
+
+// Consumer Group API
+message CommitOffsetRequest {
+  string group = 1;
+  string topic = 2;
+  int32 partition = 3;
+  int64 offset = 4;
+}
+
+message CommitOffsetResponse {
+  ErrorCode error_code = 1;
+  string error_message = 2;
+}
+
+message PollAssignmentRequest {
+  string group = 1;
+  string member_id = 2;
+  repeated string topics = 3;
+}
+
+message PollAssignmentResponse {
+  message Assignment {
+    string topic = 1;
+    repeated int32 partitions = 2;
+  }
+  repeated Assignment assignments = 1;
+  int32 heartbeat_interval_ms = 2;
+  ErrorCode error_code = 3;
+  string error_message = 4;
+}
+
+// Controller API (Phase 2)
+message CreateTopicRequest {
+  string topic = 1;
+  int32 partitions = 2;
+  int32 replication_factor = 3;
+}
+
+message CreateTopicResponse {
+  bool success = 1;
+  string error_message = 2;
+  ErrorCode error_code = 3;
+}
+
+// Topic metadata
+message TopicMetadata {
+  string topic = 1;
+  int32 partitions = 2;
+  int32 replication_factor = 3;
+  repeated PartitionMetadata partition_metadata = 4;
+}
+
+message PartitionMetadata {
+  int32 partition = 1;
+  int32 leader = 2;
+  repeated int32 replicas = 3;
+  repeated int32 isr = 4;  // In-Sync Replicas
+}
+
+// Describe topic request/response
+message DescribeTopicRequest {
+  string topic = 1;
+}
+
+message DescribeTopicResponse {
+  TopicMetadata metadata = 1;
+  ErrorCode error_code = 2;
+  string error_message = 3;
+}
+
+// Find leader request/response
+message FindLeaderRequest {
+  string topic = 1;
+  int32 partition = 2;
+}
+
+message FindLeaderResponse {
+  int32 leader_broker_id = 1;
+  string leader_host = 2;
+  int32 leader_port = 3;
+  ErrorCode error_code = 4;
+  string error_message = 5;
+}
+
+
+// Services
+service Broker {
+  rpc Produce(ProduceRequest) returns (ProduceResponse);
+  rpc Fetch(FetchRequest) returns (FetchResponse);
+}
+
+service Coordinator {
+  rpc CommitOffset(CommitOffsetRequest) returns (CommitOffsetResponse);
+  rpc PollAssignment(PollAssignmentRequest) returns (PollAssignmentResponse);
+}
+
+service Controller {
+  rpc CreateTopic(CreateTopicRequest) returns (CreateTopicResponse);
+  rpc DescribeTopic(DescribeTopicRequest) returns (DescribeTopicResponse);
+  rpc FindLeader(FindLeaderRequest) returns (FindLeaderResponse);
+}
+
