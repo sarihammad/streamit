@@ -27,7 +27,7 @@ jobs:
             git \
             wget \
             unzip
-          
+
           # Install Abseil from source
           cd /tmp
           wget https://github.com/abseil/abseil-cpp/archive/refs/tags/20240116.2.tar.gz
@@ -37,7 +37,7 @@ jobs:
           cmake -DCMAKE_INSTALL_PREFIX=/usr/local -DCMAKE_BUILD_TYPE=Release ..
           make -j$(nproc)
           sudo make install
-          
+
           # Install prometheus-cpp from source with submodules
           cd /tmp
           git clone --recursive https://github.com/jupp0r/prometheus-cpp.git
@@ -48,11 +48,15 @@ jobs:
           cmake -DCMAKE_INSTALL_PREFIX=/usr/local -DCMAKE_BUILD_TYPE=Release -DENABLE_PUSH=OFF -DENABLE_COMPRESSION=OFF ..
           make -j$(nproc)
           sudo make install
-          
-      - name: Regenerate protobuf files
+
+      - name: Verify protobuf files exist
         run: |
-          protoc --cpp_out=src/proto --grpc_out=src/proto --plugin=protoc-gen-grpc=`which grpc_cpp_plugin` proto/streamit.proto
-          
+          if [ ! -f "src/proto/streamit.pb.h" ] || [ ! -f "src/proto/streamit.grpc.pb.h" ]; then
+            echo "Protobuf files missing, this should not happen"
+            exit 1
+          fi
+          echo "Protobuf files found, proceeding with build"
+
       - name: Configure CMake with TSAN
         run: |
           cmake -S . -B build \
@@ -90,7 +94,7 @@ jobs:
             git \
             wget \
             unzip
-          
+
           # Install Abseil from source
           cd /tmp
           wget https://github.com/abseil/abseil-cpp/archive/refs/tags/20240116.2.tar.gz
@@ -100,7 +104,7 @@ jobs:
           cmake -DCMAKE_INSTALL_PREFIX=/usr/local -DCMAKE_BUILD_TYPE=Release ..
           make -j$(nproc)
           sudo make install
-          
+
           # Install prometheus-cpp from source with submodules
           cd /tmp
           git clone --recursive https://github.com/jupp0r/prometheus-cpp.git
@@ -149,7 +153,7 @@ jobs:
             git \
             wget \
             unzip
-          
+
           # Install Abseil from source
           cd /tmp
           wget https://github.com/abseil/abseil-cpp/archive/refs/tags/20240116.2.tar.gz
@@ -159,7 +163,7 @@ jobs:
           cmake -DCMAKE_INSTALL_PREFIX=/usr/local -DCMAKE_BUILD_TYPE=Release ..
           make -j$(nproc)
           sudo make install
-          
+
           # Install prometheus-cpp from source with submodules
           cd /tmp
           git clone --recursive https://github.com/jupp0r/prometheus-cpp.git
@@ -170,11 +174,15 @@ jobs:
           cmake -DCMAKE_INSTALL_PREFIX=/usr/local -DCMAKE_BUILD_TYPE=Release -DENABLE_PUSH=OFF -DENABLE_COMPRESSION=OFF ..
           make -j$(nproc)
           sudo make install
-          
-      - name: Regenerate protobuf files
+
+      - name: Verify protobuf files exist
         run: |
-          protoc --cpp_out=src/proto --grpc_out=src/proto --plugin=protoc-gen-grpc=`which grpc_cpp_plugin` proto/streamit.proto
-          
+          if [ ! -f "src/proto/streamit.pb.h" ] || [ ! -f "src/proto/streamit.grpc.pb.h" ]; then
+            echo "Protobuf files missing, this should not happen"
+            exit 1
+          fi
+          echo "Protobuf files found, proceeding with build"
+
       - name: Configure CMake for performance
         run: |
           cmake -S . -B build \

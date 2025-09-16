@@ -52,9 +52,13 @@ jobs:
           
           # Skip prometheus-cpp for now - will use simple metrics implementation
           
-      - name: Regenerate protobuf files
+      - name: Verify protobuf files exist
         run: |
-          protoc --cpp_out=src/proto --grpc_out=src/proto --plugin=protoc-gen-grpc=`which grpc_cpp_plugin` proto/streamit.proto
+          if [ ! -f "src/proto/streamit.pb.h" ] || [ ! -f "src/proto/streamit.grpc.pb.h" ]; then
+            echo "Protobuf files missing, this should not happen"
+            exit 1
+          fi
+          echo "Protobuf files found, proceeding with build"
           
       - name: Configure CMake
         run: |
@@ -124,9 +128,13 @@ jobs:
           
           # Skip prometheus-cpp for now - will use simple metrics implementation
           
-      - name: Regenerate protobuf files
+      - name: Verify protobuf files exist
         run: |
-          protoc --cpp_out=src/proto --grpc_out=src/proto --plugin=protoc-gen-grpc=`which grpc_cpp_plugin` proto/streamit.proto
+          if [ ! -f "src/proto/streamit.pb.h" ] || [ ! -f "src/proto/streamit.grpc.pb.h" ]; then
+            echo "Protobuf files missing, this should not happen"
+            exit 1
+          fi
+          echo "Protobuf files found, proceeding with build"
           
       - name: Run clang-format
         run: |
@@ -197,9 +205,13 @@ jobs:
           
           # Skip prometheus-cpp for now - will use simple metrics implementation
           
-      - name: Regenerate protobuf files
+      - name: Verify protobuf files exist
         run: |
-          protoc --cpp_out=src/proto --grpc_out=src/proto --plugin=protoc-gen-grpc=`which grpc_cpp_plugin` proto/streamit.proto
+          if [ ! -f "src/proto/streamit.pb.h" ] || [ ! -f "src/proto/streamit.grpc.pb.h" ]; then
+            echo "Protobuf files missing, this should not happen"
+            exit 1
+          fi
+          echo "Protobuf files found, proceeding with build"
           
       - name: Build
         run: |
