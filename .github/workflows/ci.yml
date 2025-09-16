@@ -54,7 +54,6 @@ jobs:
           
       - name: Regenerate protobuf files
         run: |
-          cd /github/workspace
           protoc --cpp_out=src/proto --grpc_out=src/proto --plugin=protoc-gen-grpc=`which grpc_cpp_plugin` proto/streamit.proto
           
       - name: Configure CMake
@@ -127,7 +126,6 @@ jobs:
           
       - name: Regenerate protobuf files
         run: |
-          cd /github/workspace
           protoc --cpp_out=src/proto --grpc_out=src/proto --plugin=protoc-gen-grpc=`which grpc_cpp_plugin` proto/streamit.proto
           
       - name: Run clang-format
@@ -201,7 +199,6 @@ jobs:
           
       - name: Regenerate protobuf files
         run: |
-          cd /github/workspace
           protoc --cpp_out=src/proto --grpc_out=src/proto --plugin=protoc-gen-grpc=`which grpc_cpp_plugin` proto/streamit.proto
           
       - name: Build
