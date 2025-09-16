@@ -1,0 +1,127 @@
+name: Nightly Tests
+
+on:
+  schedule:
+    - cron: "0 2 * * *" # Run at 2 AM UTC daily
+  workflow_dispatch: # Allow manual trigger
+
+jobs:
+  tsan-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            build-essential \
+            cmake \
+            ninja-build \
+            protobuf-compiler \
+            libprotobuf-dev \
+            libgrpc++-dev \
+            libabseil-dev \
+            libspdlog-dev \
+            libfmt-dev \
+            libprometheus-cpp-dev
+
+      - name: Configure CMake with TSAN
+        run: |
+          cmake -S . -B build \
+            -G Ninja \
+            -DCMAKE_BUILD_TYPE=RelWithDebInfo \
+            -DSTREAMIT_TSAN=ON \
+            -DSTREAMIT_WARNINGS_AS_ERRORS=OFF
+
+      - name: Build with TSAN
+        run: cmake --build build -j $(nproc)
+
+      - name: Run TSAN tests
+        run: |
+          cd build
+          ctest --output-on-failure --label-exclude chaos
+
+  memory-leak-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            build-essential \
+            cmake \
+            ninja-build \
+            protobuf-compiler \
+            libprotobuf-dev \
+            libgrpc++-dev \
+            libabseil-dev \
+            libspdlog-dev \
+            libfmt-dev \
+            libprometheus-cpp-dev \
+            valgrind
+
+      - name: Configure CMake
+        run: |
+          cmake -S . -B build \
+            -G Ninja \
+            -DCMAKE_BUILD_TYPE=Debug \
+            -DSTREAMIT_ASAN=ON
+
+      - name: Build
+        run: cmake --build build -j $(nproc)
+
+      - name: Run Valgrind tests
+        run: |
+          cd build
+          ctest --output-on-failure --label-exclude integration,chaos
+
+  performance-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            build-essential \
+            cmake \
+            ninja-build \
+            protobuf-compiler \
+            libprotobuf-dev \
+            libgrpc++-dev \
+            libabseil-dev \
+            libspdlog-dev \
+            libfmt-dev \
+            libprometheus-cpp-dev
+
+      - name: Configure CMake for performance
+        run: |
+          cmake -S . -B build \
+            -G Ninja \
+            -DCMAKE_BUILD_TYPE=Release \
+            -DSTREAMIT_WARNINGS_AS_ERRORS=OFF
+
+      - name: Build
+        run: cmake --build build -j $(nproc)
+
+      - name: Run performance tests
+        run: |
+          cd build
+          # Run benchmark tests if they exist
+          if [ -f "tools/bench/streamit_bench" ]; then
+            ./tools/bench/streamit_bench --benchmark_format=json > benchmark_results.json
+          fi
+
+      - name: Upload benchmark results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: benchmark-results
+          path: build/benchmark_results.json
