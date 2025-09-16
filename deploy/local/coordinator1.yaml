@@ -1,0 +1,11 @@
+id: coordinator-1
+host: localhost
+port: 9094
+offset_storage_path: ./offsets
+heartbeat_interval_ms: 10000
+session_timeout_ms: 30000
+rebalance_timeout_ms: 300000 # 5 minutes
+enable_metrics: true
+metrics_port: 8082
+log_level: info
+

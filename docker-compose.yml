@@ -1,0 +1,104 @@
+version: '3.8'
+
+services:
+  broker1:
+    build:
+      context: .
+      dockerfile: docker/broker.Dockerfile
+    ports:
+      - "9092:9092"
+      - "8080:8080"
+    volumes:
+      - ./logs/broker1:/app/logs
+      - ./deploy/local/broker1.yaml:/app/config.yaml
+    environment:
+      - STREAMIT_CONFIG_FILE=/app/config.yaml
+    command: ["streamit_broker", "/app/config.yaml"]
+
+  broker2:
+    build:
+      context: .
+      dockerfile: docker/broker.Dockerfile
+    ports:
+      - "9093:9092"
+      - "8081:8080"
+    volumes:
+      - ./logs/broker2:/app/logs
+      - ./deploy/local/broker2.yaml:/app/config.yaml
+    environment:
+      - STREAMIT_CONFIG_FILE=/app/config.yaml
+    command: ["streamit_broker", "/app/config.yaml"]
+
+  broker3:
+    build:
+      context: .
+      dockerfile: docker/broker.Dockerfile
+    ports:
+      - "9094:9092"
+      - "8082:8080"
+    volumes:
+      - ./logs/broker3:/app/logs
+      - ./deploy/local/broker3.yaml:/app/config.yaml
+    environment:
+      - STREAMIT_CONFIG_FILE=/app/config.yaml
+    command: ["streamit_broker", "/app/config.yaml"]
+
+  controller:
+    build:
+      context: .
+      dockerfile: docker/controller.Dockerfile
+    ports:
+      - "9095:9093"
+      - "8083:8081"
+    volumes:
+      - ./deploy/local/controller1.yaml:/app/config.yaml
+      - ./deploy/local/topics.yaml:/app/topics.yaml
+    environment:
+      - STREAMIT_CONFIG_FILE=/app/config.yaml
+    command: ["streamit_controller", "/app/config.yaml"]
+    depends_on:
+      - broker1
+      - broker2
+      - broker3
+
+  coordinator:
+    build:
+      context: .
+      dockerfile: docker/coordinator.Dockerfile
+    ports:
+      - "9096:9094"
+      - "8084:8082"
+    volumes:
+      - ./deploy/local/coordinator1.yaml:/app/config.yaml
+      - ./offsets:/app/offsets
+    environment:
+      - STREAMIT_CONFIG_FILE=/app/config.yaml
+    command: ["streamit_coordinator", "/app/config.yaml"]
+    depends_on:
+      - controller
+
+  prometheus:
+    image: prom/prometheus:latest
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./deploy/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/etc/prometheus/console_libraries'
+      - '--web.console.templates=/etc/prometheus/consoles'
+      - '--web.enable-lifecycle'
+
+  grafana:
+    image: grafana/grafana:latest
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./deploy/grafana/dashboards:/var/lib/grafana/dashboards
+      - ./deploy/grafana/provisioning:/etc/grafana/provisioning
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    depends_on:
+      - prometheus
+

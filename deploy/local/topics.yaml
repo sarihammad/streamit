@@ -1,0 +1,11 @@
+topics:
+  - name: orders
+    partitions: 6
+    replication_factor: 1
+  - name: events
+    partitions: 3
+    replication_factor: 1
+  - name: metrics
+    partitions: 1
+    replication_factor: 1
+

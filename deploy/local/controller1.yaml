@@ -1,0 +1,10 @@
+id: controller-1
+host: localhost
+port: 9093
+config_file: ./config/topics.yaml
+heartbeat_interval_ms: 10000
+session_timeout_ms: 30000
+enable_metrics: true
+metrics_port: 8081
+log_level: info
+

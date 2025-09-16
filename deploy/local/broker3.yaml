@@ -1,0 +1,15 @@
+id: broker-3
+host: localhost
+port: 9092
+log_dir: ./logs/broker3
+max_segment_size_bytes: 134217728 # 128MB
+segment_roll_interval_ms: 3600000 # 1 hour
+max_inflight_bytes: 104857600 # 100MB
+replication_factor: 1
+min_insync_replicas: 1
+request_timeout_ms: 30000
+replication_timeout_ms: 10000
+enable_metrics: true
+metrics_port: 8080
+log_level: info
+
