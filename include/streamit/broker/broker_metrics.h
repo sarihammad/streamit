@@ -41,23 +41,23 @@ public:
 
 private:
   // Produce metrics
-  std::shared_ptr<prometheus::Histogram> produce_latency_hist_;
-  std::shared_ptr<prometheus::Counter> produce_bytes_counter_;
-  std::shared_ptr<prometheus::Counter> produce_records_counter_;
+  std::shared_ptr<streamit::common::SimpleHistogram> produce_latency_hist_;
+  std::shared_ptr<streamit::common::SimpleCounter> produce_bytes_counter_;
+  std::shared_ptr<streamit::common::SimpleCounter> produce_records_counter_;
   
   // Fetch metrics
-  std::shared_ptr<prometheus::Histogram> fetch_latency_hist_;
-  std::shared_ptr<prometheus::Counter> fetch_bytes_counter_;
+  std::shared_ptr<streamit::common::SimpleHistogram> fetch_latency_hist_;
+  std::shared_ptr<streamit::common::SimpleCounter> fetch_bytes_counter_;
   
   // Storage metrics
-  std::shared_ptr<prometheus::Counter> segment_rolls_counter_;
-  std::shared_ptr<prometheus::Counter> crc_mismatches_counter_;
+  std::shared_ptr<streamit::common::SimpleCounter> segment_rolls_counter_;
+  std::shared_ptr<streamit::common::SimpleCounter> crc_mismatches_counter_;
   
   // High water mark metrics
-  std::shared_ptr<prometheus::Gauge> high_watermark_gauge_;
+  std::shared_ptr<streamit::common::SimpleGauge> high_watermark_gauge_;
   
   // Replication lag metrics
-  std::shared_ptr<prometheus::Gauge> replication_lag_gauge_;
+  std::shared_ptr<streamit::common::SimpleGauge> replication_lag_gauge_;
   
   // Helper to create labels
   [[nodiscard]] std::map<std::string, std::string> CreateLabels(

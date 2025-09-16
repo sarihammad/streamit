@@ -4,46 +4,53 @@
 #include <memory>
 #include <chrono>
 #include <map>
+#include <mutex>
+#include <unordered_map>
 
 namespace streamit::common {
 
-// Prometheus metrics registry and helpers
+// Forward declarations for simple metrics classes
+class SimpleHistogram;
+class SimpleCounter;
+class SimpleGauge;
+
+// Simple metrics registry without external dependencies
 class MetricsRegistry {
 public:
   // Get singleton instance
   static MetricsRegistry& Instance();
   
-  // Get the Prometheus registry
-  [[nodiscard]] prometheus::Registry& GetRegistry() noexcept;
-  
   // Create a histogram with standard latency buckets
-  [[nodiscard]] std::shared_ptr<prometheus::Histogram> CreateLatencyHistogram(
+  [[nodiscard]] std::shared_ptr<SimpleHistogram> CreateLatencyHistogram(
     const std::string& name, const std::string& help, 
     const std::map<std::string, std::string>& labels = {});
   
   // Create a counter
-  [[nodiscard]] std::shared_ptr<prometheus::Counter> CreateCounter(
+  [[nodiscard]] std::shared_ptr<SimpleCounter> CreateCounter(
     const std::string& name, const std::string& help,
     const std::map<std::string, std::string>& labels = {});
   
   // Create a gauge
-  [[nodiscard]] std::shared_ptr<prometheus::Gauge> CreateGauge(
+  [[nodiscard]] std::shared_ptr<SimpleGauge> CreateGauge(
     const std::string& name, const std::string& help,
     const std::map<std::string, std::string>& labels = {});
 
 private:
   MetricsRegistry() = default;
-  std::unique_ptr<prometheus::Registry> registry_;
+  mutable std::mutex mutex_;
+  std::unordered_map<std::string, std::shared_ptr<SimpleHistogram>> histograms_;
+  std::unordered_map<std::string, std::shared_ptr<SimpleCounter>> counters_;
+  std::unordered_map<std::string, std::shared_ptr<SimpleGauge>> gauges_;
 };
 
 // RAII timer for measuring latency
 class ScopedTimer {
 public:
-  ScopedTimer(std::shared_ptr<prometheus::Histogram> histogram);
+  ScopedTimer(std::shared_ptr<SimpleHistogram> histogram);
   ~ScopedTimer();
 
 private:
-  std::shared_ptr<prometheus::Histogram> histogram_;
+  std::shared_ptr<SimpleHistogram> histogram_;
   std::chrono::steady_clock::time_point start_time_;
 };
 
