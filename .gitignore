@@ -99,11 +99,11 @@ node_modules/
 tmp/
 temp/
 
-# Generated protobuf files
-*.pb.h
-*.pb.cc
-*.grpc.pb.h
-*.grpc.pb.cc
+# Generated protobuf files (commented out - we commit these)
+# *.pb.h
+# *.pb.cc
+# *.grpc.pb.h
+# *.grpc.pb.cc
 
 # Test results
 test-results/
