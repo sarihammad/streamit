@@ -1,0 +1,5 @@
+# Generated protobuf files
+src/proto/proto/*.pb.h
+src/proto/proto/*.pb.cc
+src/proto/proto/*.grpc.pb.h
+src/proto/proto/*.grpc.pb.cc

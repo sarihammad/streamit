@@ -1,13 +1,8 @@
 add_library(streamit_lib_broker
-  broker_service.h
   broker_service.cc
-  idempotency_table.h
   idempotency_table.cc
-  bounded_idempotency_table.h
   bounded_idempotency_table.cc
-  broker_metrics.h
   broker_metrics.cc
-  broker_main.cc
 )
 
 target_link_libraries(streamit_lib_broker

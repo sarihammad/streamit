@@ -1,9 +1,6 @@
 add_library(streamit_lib_coordinator
-  coordinator_service.h
   coordinator_service.cc
-  consumer_group_manager.h
   consumer_group_manager.cc
-  coordinator_main.cc
 )
 
 target_link_libraries(streamit_lib_coordinator

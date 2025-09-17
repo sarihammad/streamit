@@ -1,9 +1,6 @@
 add_library(streamit_lib_net
-  grpc_server.h
   grpc_server.cc
-  metrics.h
   metrics.cc
-  health_check.h
   health_check.cc
 )
 

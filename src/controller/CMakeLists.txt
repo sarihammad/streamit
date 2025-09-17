@@ -1,9 +1,6 @@
 add_library(streamit_lib_controller
-  controller_service.h
   controller_service.cc
-  topic_manager.h
   topic_manager.cc
-  controller_main.cc
 )
 
 target_link_libraries(streamit_lib_controller
