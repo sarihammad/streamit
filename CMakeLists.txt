@@ -129,58 +129,14 @@ enable_testing()
 add_subdirectory(tests/unit)
 add_subdirectory(tests/integration)
 
-# Main executables
-add_executable(streamit_broker src/broker/broker_main.cc)
-target_link_libraries(streamit_broker
-  PRIVATE
-    streamit_common
-    streamit_storage
-    streamit_net
-    streamit_broker
-    streamit_proto
-    Threads::Threads
-    protobuf::libprotobuf
-    absl::status
-    absl::statusor
-    fmt::fmt
-    spdlog::spdlog
-)
-
-add_executable(streamit_controller src/controller/controller_main.cc)
-target_link_libraries(streamit_controller
-  PRIVATE
-    streamit_common
-    streamit_controller
-    streamit_proto
-    Threads::Threads
-    protobuf::libprotobuf
-    absl::status
-    absl::statusor
-    fmt::fmt
-    spdlog::spdlog
-)
-
-add_executable(streamit_coordinator src/coordinator/coordinator_main.cc)
-target_link_libraries(streamit_coordinator
-  PRIVATE
-    streamit_common
-    streamit_coordinator
-    streamit_proto
-    Threads::Threads
-    protobuf::libprotobuf
-    absl::status
-    absl::statusor
-    fmt::fmt
-    spdlog::spdlog
-)
+# Main executables are defined in their respective subdirectories
 
 # Install targets
 install(TARGETS streamit_broker streamit_controller streamit_coordinator
   RUNTIME DESTINATION bin
 )
 
-install(TARGETS streamit_proto streamit_common streamit_storage streamit_net
-  streamit_broker streamit_controller streamit_coordinator
+install(TARGETS streamit_proto
   LIBRARY DESTINATION lib
   ARCHIVE DESTINATION lib
 )

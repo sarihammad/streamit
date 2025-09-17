@@ -28,7 +28,7 @@ bool IsTableInitialized() noexcept {
   return table_initialized.load(std::memory_order_acquire);
 }
 
-} 
+} // namespace
 
 const uint32_t Crc32::kCrcTable[256] = {};
 
@@ -36,7 +36,7 @@ uint32_t Crc32::Compute(std::span<const std::byte> data) noexcept {
   if (!IsTableInitialized()) {
     InitializeTable();
   }
-  
+
   uint32_t crc = 0xFFFFFFFF;
   for (const auto& byte : data) {
     crc = crc_table[(crc ^ static_cast<uint8_t>(byte)) & 0xFF] ^ (crc >> 8);
@@ -45,8 +45,7 @@ uint32_t Crc32::Compute(std::span<const std::byte> data) noexcept {
 }
 
 uint32_t Crc32::Compute(std::string_view data) noexcept {
-  return Compute(std::span<const std::byte>(
-    reinterpret_cast<const std::byte*>(data.data()), data.size()));
+  return Compute(std::span<const std::byte>(reinterpret_cast<const std::byte*>(data.data()), data.size()));
 }
 
 bool Crc32::Verify(std::span<const std::byte> data, uint32_t expected_crc) noexcept {
@@ -65,5 +64,4 @@ bool Crc32::IsTableInitialized() noexcept {
   return ::streamit::common::IsTableInitialized();
 }
 
-}
-
+} // namespace streamit::common

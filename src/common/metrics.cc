@@ -11,25 +11,27 @@ public:
     std::lock_guard<std::mutex> lock(mutex_);
     total_ += value;
     count_++;
-    if (value > max_) max_ = value;
-    if (count_ == 1 || value < min_) min_ = value;
+    if (value > max_)
+      max_ = value;
+    if (count_ == 1 || value < min_)
+      min_ = value;
   }
-  
+
   double GetSum() const {
     std::lock_guard<std::mutex> lock(mutex_);
     return total_;
   }
-  
+
   double GetCount() const {
     std::lock_guard<std::mutex> lock(mutex_);
     return count_;
   }
-  
+
   double GetMax() const {
     std::lock_guard<std::mutex> lock(mutex_);
     return max_;
   }
-  
+
   double GetMin() const {
     std::lock_guard<std::mutex> lock(mutex_);
     return min_;
@@ -49,7 +51,7 @@ public:
     std::lock_guard<std::mutex> lock(mutex_);
     value_ += value;
   }
-  
+
   double GetValue() const {
     std::lock_guard<std::mutex> lock(mutex_);
     return value_;
@@ -66,12 +68,12 @@ public:
     std::lock_guard<std::mutex> lock(mutex_);
     value_ = value;
   }
-  
+
   void Increment(double value = 1.0) {
     std::lock_guard<std::mutex> lock(mutex_);
     value_ += value;
   }
-  
+
   double GetValue() const {
     std::lock_guard<std::mutex> lock(mutex_);
     return value_;
@@ -88,9 +90,8 @@ MetricsRegistry& MetricsRegistry::Instance() {
 }
 
 std::shared_ptr<SimpleHistogram> MetricsRegistry::CreateLatencyHistogram(
-    const std::string& name, const std::string& help, 
-    const std::map<std::string, std::string>& labels) {
-  
+    const std::string& name, const std::string& help, const std::map<std::string, std::string>& labels) {
+
   std::lock_guard<std::mutex> lock(mutex_);
   auto key = name + "_" + std::to_string(std::hash<std::string>{}(help));
   if (histograms_.find(key) == histograms_.end()) {
@@ -99,10 +100,9 @@ std::shared_ptr<SimpleHistogram> MetricsRegistry::CreateLatencyHistogram(
   return histograms_[key];
 }
 
-std::shared_ptr<SimpleCounter> MetricsRegistry::CreateCounter(
-    const std::string& name, const std::string& help,
-    const std::map<std::string, std::string>& labels) {
-  
+std::shared_ptr<SimpleCounter> MetricsRegistry::CreateCounter(const std::string& name, const std::string& help,
+                                                              const std::map<std::string, std::string>& labels) {
+
   std::lock_guard<std::mutex> lock(mutex_);
   auto key = name + "_" + std::to_string(std::hash<std::string>{}(help));
   if (counters_.find(key) == counters_.end()) {
@@ -111,10 +111,9 @@ std::shared_ptr<SimpleCounter> MetricsRegistry::CreateCounter(
   return counters_[key];
 }
 
-std::shared_ptr<SimpleGauge> MetricsRegistry::CreateGauge(
-    const std::string& name, const std::string& help,
-    const std::map<std::string, std::string>& labels) {
-  
+std::shared_ptr<SimpleGauge> MetricsRegistry::CreateGauge(const std::string& name, const std::string& help,
+                                                          const std::map<std::string, std::string>& labels) {
+
   std::lock_guard<std::mutex> lock(mutex_);
   auto key = name + "_" + std::to_string(std::hash<std::string>{}(help));
   if (gauges_.find(key) == gauges_.end()) {
@@ -124,14 +123,13 @@ std::shared_ptr<SimpleGauge> MetricsRegistry::CreateGauge(
 }
 
 ScopedTimer::ScopedTimer(std::shared_ptr<SimpleHistogram> histogram)
-  : histogram_(histogram)
-  , start_time_(std::chrono::steady_clock::now()) {}
+    : histogram_(histogram), start_time_(std::chrono::steady_clock::now()) {
+}
 
 ScopedTimer::~ScopedTimer() {
   if (histogram_) {
     auto end_time = std::chrono::steady_clock::now();
-    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(
-      end_time - start_time_).count();
+    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end_time - start_time_).count();
     histogram_->Observe(duration);
   }
 }

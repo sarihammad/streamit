@@ -27,7 +27,7 @@ void SignalHandler::Reset() noexcept {
 void SignalHandler::HandleSignal(int signal) noexcept {
   std::cout << "Received signal " << signal << ", initiating shutdown..." << std::endl;
   g_shutdown_requested.store(true);
-  
+
   if (shutdown_callback_) {
     shutdown_callback_();
   }

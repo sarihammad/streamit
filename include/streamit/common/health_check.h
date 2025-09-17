@@ -1,9 +1,9 @@
 #pragma once
 
-#include <string>
 #include <functional>
-#include <memory>
 #include <grpcpp/grpcpp.h>
+#include <memory>
+#include <string>
 
 namespace streamit::common {
 
@@ -18,8 +18,9 @@ enum class HealthStatus {
 struct HealthCheckResult {
   HealthStatus status;
   std::string message;
-  
-  HealthCheckResult(HealthStatus s, const std::string& m) : status(s), message(m) {}
+
+  HealthCheckResult(HealthStatus s, const std::string& m) : status(s), message(m) {
+  }
 };
 
 // Health check function type
@@ -30,13 +31,13 @@ class HealthCheckManager {
 public:
   // Add a health check
   void AddCheck(const std::string& name, HealthCheckFunction check);
-  
+
   // Run all health checks
   [[nodiscard]] HealthCheckResult RunChecks() const;
-  
+
   // Run a specific health check
   [[nodiscard]] HealthCheckResult RunCheck(const std::string& name) const;
-  
+
   // Get all check names
   [[nodiscard]] std::vector<std::string> GetCheckNames() const;
 
@@ -48,15 +49,14 @@ private:
 class HealthCheckServer {
 public:
   // Constructor
-  HealthCheckServer(const std::string& host, uint16_t port, 
-                   std::shared_ptr<HealthCheckManager> manager);
-  
+  HealthCheckServer(const std::string& host, uint16_t port, std::shared_ptr<HealthCheckManager> manager);
+
   // Start the server
   [[nodiscard]] bool Start() noexcept;
-  
+
   // Stop the server
   [[nodiscard]] bool Stop() noexcept;
-  
+
   // Check if running
   [[nodiscard]] bool IsRunning() const noexcept;
 
@@ -66,7 +66,7 @@ private:
   std::shared_ptr<HealthCheckManager> manager_;
   std::unique_ptr<grpc::Server> server_;
   std::atomic<bool> running_;
-  
+
   // Handle HTTP requests
   void HandleRequest(const std::string& path, const std::string& response);
 };

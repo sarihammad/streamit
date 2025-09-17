@@ -39,5 +39,4 @@ bool IsRetryable(const absl::Status& status) noexcept;
 // Check if status represents a client error (not retryable)
 bool IsClientError(const absl::Status& status) noexcept;
 
-}
-
+} // namespace streamit::common

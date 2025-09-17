@@ -1,10 +1,10 @@
 #pragma once
 
+#include <functional>
 #include <grpcpp/grpcpp.h>
 #include <memory>
 #include <string>
 #include <vector>
-#include <functional>
 
 namespace streamit::net {
 
@@ -13,24 +13,21 @@ class GrpcServerBuilder {
 public:
   // Constructor
   GrpcServerBuilder(const std::string& host, uint16_t port);
-  
+
   // Add a service
   GrpcServerBuilder& AddService(grpc::Service* service);
-  
+
   // Set maximum message size
   GrpcServerBuilder& SetMaxMessageSize(size_t max_send_size, size_t max_receive_size);
-  
+
   // Set keepalive options
-  GrpcServerBuilder& SetKeepaliveOptions(int64_t keepalive_time_ms,
-                                        int64_t keepalive_timeout_ms,
-                                        int64_t keepalive_permit_without_calls,
-                                        int64_t max_connection_idle_ms,
-                                        int64_t max_connection_age_ms,
-                                        int64_t max_connection_age_grace_ms);
-  
+  GrpcServerBuilder& SetKeepaliveOptions(int64_t keepalive_time_ms, int64_t keepalive_timeout_ms,
+                                         int64_t keepalive_permit_without_calls, int64_t max_connection_idle_ms,
+                                         int64_t max_connection_age_ms, int64_t max_connection_age_grace_ms);
+
   // Set thread pool size
   GrpcServerBuilder& SetThreadPoolSize(int num_threads);
-  
+
   // Build the server
   [[nodiscard]] std::unique_ptr<grpc::Server> Build();
 
@@ -54,19 +51,19 @@ class GrpcServer {
 public:
   // Constructor
   GrpcServer(std::unique_ptr<grpc::Server> server);
-  
+
   // Start the server
   [[nodiscard]] bool Start() noexcept;
-  
+
   // Stop the server
   [[nodiscard]] bool Stop() noexcept;
-  
+
   // Wait for server to finish
   void Wait() noexcept;
-  
+
   // Check if server is running
   [[nodiscard]] bool IsRunning() const noexcept;
-  
+
   // Get server address
   [[nodiscard]] std::string GetAddress() const noexcept;
 
@@ -76,5 +73,4 @@ private:
   std::string address_;
 };
 
-}
-
+} // namespace streamit::net

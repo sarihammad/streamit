@@ -44,5 +44,4 @@ T UnwrapOrElse(const Result<T>& result, F&& factory) {
   return result.ok() ? result.value() : factory();
 }
 
-}
-
+} // namespace streamit::common
