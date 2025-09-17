@@ -8,5 +8,4 @@ int RunConsumer(int argc, char* argv[]);
 // Print consumer help
 void PrintConsumerHelp();
 
-}
-
+} // namespace streamit::cli

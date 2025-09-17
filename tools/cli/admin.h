@@ -16,5 +16,4 @@ void PrintCreateTopicHelp();
 void PrintDescribeTopicHelp();
 void PrintListTopicsHelp();
 
-}
-
+} // namespace streamit::cli

@@ -8,5 +8,4 @@ int RunProducer(int argc, char* argv[]);
 // Print producer help
 void PrintProducerHelp();
 
-}
-
+} // namespace streamit::cli

@@ -10,9 +10,9 @@ int RunAdmin(int argc, char* argv[]) {
     PrintAdminHelp();
     return 1;
   }
-  
+
   std::string command = argv[1];
-  
+
   if (command == "create-topic") {
     return RunCreateTopic(argc - 1, argv + 1);
   } else if (command == "describe-topic") {
@@ -33,7 +33,7 @@ int RunCreateTopic(int argc, char* argv[]) {
   std::string topic;
   int partitions = 1;
   int replication_factor = 1;
-  
+
   for (int i = 1; i < argc; ++i) {
     std::string arg = argv[i];
     if (arg == "--help" || arg == "-h") {
@@ -51,32 +51,31 @@ int RunCreateTopic(int argc, char* argv[]) {
       replication_factor = std::stoi(argv[++i]);
     }
   }
-  
+
   if (topic.empty()) {
     std::cerr << "Error: --topic is required" << std::endl;
     PrintCreateTopicHelp();
     return 1;
   }
-  
+
   // Create gRPC channel
   std::string server_address = controller_host + ":" + std::to_string(controller_port);
   auto channel = grpc::CreateChannel(server_address, grpc::InsecureChannelCredentials());
   auto stub = streamit::v1::Controller::NewStub(channel);
-  
+
   // Create topic request
   streamit::v1::CreateTopicRequest request;
   request.set_topic(topic);
   request.set_partitions(partitions);
   request.set_replication_factor(replication_factor);
-  
+
   streamit::v1::CreateTopicResponse response;
   grpc::ClientContext context;
   grpc::Status status = stub->CreateTopic(&context, request, &response);
-  
+
   if (status.ok() && response.success()) {
-    std::cout << "Topic '" << topic << "' created successfully with " 
-              << partitions << " partitions and replication factor " 
-              << replication_factor << std::endl;
+    std::cout << "Topic '" << topic << "' created successfully with " << partitions
+              << " partitions and replication factor " << replication_factor << std::endl;
     return 0;
   } else {
     std::cerr << "Failed to create topic: ";
@@ -94,7 +93,7 @@ int RunDescribeTopic(int argc, char* argv[]) {
   std::string controller_host = "localhost";
   int controller_port = 9093;
   std::string topic;
-  
+
   for (int i = 1; i < argc; ++i) {
     std::string arg = argv[i];
     if (arg == "--help" || arg == "-h") {
@@ -108,39 +107,39 @@ int RunDescribeTopic(int argc, char* argv[]) {
       topic = argv[++i];
     }
   }
-  
+
   if (topic.empty()) {
     std::cerr << "Error: --topic is required" << std::endl;
     PrintDescribeTopicHelp();
     return 1;
   }
-  
+
   // Create gRPC channel
   std::string server_address = controller_host + ":" + std::to_string(controller_port);
   auto channel = grpc::CreateChannel(server_address, grpc::InsecureChannelCredentials());
   auto stub = streamit::v1::Controller::NewStub(channel);
-  
+
   // Describe topic request
   streamit::v1::DescribeTopicRequest request;
   request.set_topic(topic);
-  
+
   streamit::v1::DescribeTopicResponse response;
   grpc::ClientContext context;
   grpc::Status status = stub->DescribeTopic(&context, request, &response);
-  
+
   if (status.ok()) {
     std::cout << "Topic: " << response.topic() << std::endl;
     std::cout << "Partitions:" << std::endl;
-    
+
     for (const auto& partition : response.partitions()) {
-      std::cout << "  Partition " << partition.partition() 
-                << " (Leader: " << partition.leader() 
+      std::cout << "  Partition " << partition.partition() << " (Leader: " << partition.leader()
                 << ", HW: " << partition.high_watermark() << ")";
-      
+
       if (!partition.replicas().empty()) {
         std::cout << " [Replicas: ";
         for (int i = 0; i < partition.replicas().size(); ++i) {
-          if (i > 0) std::cout << ", ";
+          if (i > 0)
+            std::cout << ", ";
           std::cout << partition.replicas(i);
         }
         std::cout << "]";
@@ -158,7 +157,7 @@ int RunListTopics(int argc, char* argv[]) {
   // Parse command line arguments
   std::string controller_host = "localhost";
   int controller_port = 9093;
-  
+
   for (int i = 1; i < argc; ++i) {
     std::string arg = argv[i];
     if (arg == "--help" || arg == "-h") {
@@ -170,13 +169,13 @@ int RunListTopics(int argc, char* argv[]) {
       controller_port = std::stoi(argv[++i]);
     }
   }
-  
+
   // For simplicity, just list some default topics
   // In a real implementation, this would query the controller
   std::cout << "Topics:" << std::endl;
   std::cout << "  orders" << std::endl;
   std::cout << "  events" << std::endl;
-  
+
   return 0;
 }
 
@@ -222,5 +221,4 @@ void PrintListTopicsHelp() {
             << "  --help, -h            Show this help message\n";
 }
 
-}
-
+} // namespace streamit::cli

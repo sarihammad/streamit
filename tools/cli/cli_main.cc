@@ -1,9 +1,9 @@
-#include "producer.h"
-#include "consumer.h"
 #include "admin.h"
-#include <spdlog/spdlog.h>
-#include <spdlog/sinks/stdout_color_sinks.h>
+#include "consumer.h"
+#include "producer.h"
 #include <iostream>
+#include <spdlog/sinks/stdout_color_sinks.h>
+#include <spdlog/spdlog.h>
 #include <string>
 
 namespace {
@@ -25,18 +25,18 @@ void PrintUsage(const char* program_name) {
             << "Use '" << program_name << " <command> --help' for command-specific help.\n";
 }
 
-} 
+} // namespace
 
 int main(int argc, char* argv[]) {
   SetupLogging();
-  
+
   if (argc < 2) {
     PrintUsage(argv[0]);
     return 1;
   }
-  
+
   std::string command = argv[1];
-  
+
   if (command == "produce") {
     return streamit::cli::RunProducer(argc - 1, argv + 1);
   } else if (command == "consume") {
@@ -49,4 +49,3 @@ int main(int argc, char* argv[]) {
     return 1;
   }
 }
-

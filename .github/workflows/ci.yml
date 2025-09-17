@@ -137,13 +137,13 @@ jobs:
 
       - name: Run clang-format
         run: |
-          find . -name "*.h" -o -name "*.cc" | grep -v build | grep -v "src/proto/proto" | xargs clang-format --dry-run --Werror
+          find . -name "*.h" -o -name "*.cc" | grep -v build | grep -v "src/proto" | xargs clang-format --dry-run --Werror
 
       - name: Run clang-tidy
         run: |
           cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Debug
           cmake --build build
-          find . -name "*.h" -o -name "*.cc" | grep -v build | grep -v "src/proto/proto" | xargs clang-tidy --config-file=.clang-tidy
+          find . -name "*.h" -o -name "*.cc" | grep -v build | grep -v "src/proto" | xargs clang-tidy --config-file=.clang-tidy
 
   docker:
     runs-on: ubuntu-latest
