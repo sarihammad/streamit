@@ -2,18 +2,6 @@
 
 An implementation of a distributed commit log inspired by Apache Kafka. Built with modern C++ to explore advanced distributed systems concepts, performance optimization, and production engineering practices.
 
-## System Overview
-
-StreamIt provides a high-performance, fault-tolerant distributed commit log with:
-
-- **Append-only segment storage** with memory-mapped I/O and sparse indexing
-- **gRPC-based APIs** for produce, fetch, and consumer group management
-- **Idempotent producers** with bounded TTL+LRU caching
-- **Crash recovery** with tail scanning and index rebuilding
-- **Zero-copy fetch** using `sendfile()` on Linux
-- **Comprehensive observability** with Prometheus metrics and structured logging
-- **Health checks** and graceful shutdown with `std::jthread`
-
 ## Architecture
 
 ```mermaid
@@ -49,6 +37,18 @@ graph TD
         CTRL --> HEALTH
     end
 ```
+
+## System Overview
+
+StreamIt provides a high-performance, fault-tolerant distributed commit log with:
+
+- **Append-only segment storage** with memory-mapped I/O and sparse indexing
+- **gRPC-based APIs** for produce, fetch, and consumer group management
+- **Idempotent producers** with bounded TTL+LRU caching
+- **Crash recovery** with tail scanning and index rebuilding
+- **Zero-copy fetch** using `sendfile()` on Linux
+- **Comprehensive observability** with Prometheus metrics and structured logging
+- **Health checks** and graceful shutdown with `std::jthread`
 
 ## Features
 
