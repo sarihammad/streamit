@@ -168,26 +168,6 @@ curl http://localhost:9090/metrics | grep streamit
 open http://localhost:3000
 ```
 
-## Performance Benchmarks
-
-### Throughput
-
-- **Producer**: 120 MB/s aggregate, 1M records/s
-- **Consumer**: 100 MB/s per partition
-- **Latency**: p95 < 10ms (acks=leader), p95 < 25ms (acks=quorum)
-
-### Resource Usage
-
-- **Memory**: ~50MB base + 1MB per 1GB of data
-- **CPU**: <5% idle, <20% under load
-- **Disk**: ~90% of raw data (with compression)
-
-### Scalability
-
-- **Partitions**: 10,000+ per broker
-- **Topics**: 1,000+ per cluster
-- **Consumers**: 100+ per consumer group
-
 ## Testing
 
 ### Unit Tests
